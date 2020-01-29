@@ -85,12 +85,12 @@ body {
 </div>
 
 <div style="padding-left:16px">
-  <h3>Twitter Analysis Tool</h3>
-  <p>Leverage the power of Machine Learning to detect Propaganda Bots on Twitter.</p>
-  <p>Enter the Hashtag you wish to analyze below:</p>
-  <p> <input id="user_hashtag" type="text" value="Hashtag to Analyze"> </p>
-  <p> <button onclick="run_NB()">Detect Bots!</button>
-  <p id="report_display"></p>
+  <h3>Purpose</h3>
+  <p>The impact that malicious Twitter bots, or automated Twitter accounts intent on appearing to be a real human Twitter Users, have had on worldwide democratic elections is now an indisputable fact. Malicious and benign actors infiltration of hot-button, timely issues has a well documented history across the globe now (CNN: Twitter Bots Double Ahead of Swedish 2018 Elections).</p>
+
+  <p>TAT is a third-party Twitter Analysis Tool to help study these bots. It takes a User-supplied Hashtag, retrieves recent posts containing that hashtag, and utilizes machine learning models to automatically detect potential Tweets from bots.</p>
+
+  <p>We then generate a report that contains a breakdown of likely real users’ vs. potential bots’ Tweets, and the rehydratable Twitter IDs of the potential bots’ posts. The report is a txt or pdf file, and the rehydratable Twitter IDs will be logged in our database, as well as in a separate csv file.</p>
 </div>
 
 <!-- End smartphone / tablet look -->
@@ -108,3 +108,4 @@ function Menu_Nav() {
 </script>
 </body>
 </html>
+
