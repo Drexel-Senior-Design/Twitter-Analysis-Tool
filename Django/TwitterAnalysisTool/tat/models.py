@@ -101,14 +101,21 @@ def LoadModel(mfn):
         model = load('tat/mlModels/gaussianNB.joblib')
     return model
 
-class GaussianNB():
-    data = read_mongo_data('Hashtags', 'ImpeachmentDay')
+def GaussianNB(db, collect):
+    data = read_mongo_data(db, collect)
     data = clean_twitter_data_strings_to_ints(data)
     #print(data)
     #print(data)
     m = LoadModel('gaussianNB')
     x = data.values.tolist()
     #print(x)
-    for entry in x:
-        print(m.predict([entry]))
+    #for entry in x:
+     #   print(m.predict([entry]))
+    predictions = m.predict(x)
+    print(predictions)
+    bot_num = np.sum(predictions=='bot')
+    percent = bot_num/len(predictions)*100
+    statement = "Out of {} analyzed tweets, {} are suspected bots. That is {}%!".format(len(predictions), bot_num, round(percent,2))
+    print(statement)
+    return statement
 

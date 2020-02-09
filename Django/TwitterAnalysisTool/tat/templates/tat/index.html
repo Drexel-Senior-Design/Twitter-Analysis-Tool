@@ -84,7 +84,15 @@ body {
   <p>Enter the Hashtag you wish to analyze below:</p>
     <form method="POST" action="/tat/search/">
         {% csrf_token %}
-  <p> <input name="user_hashtag" type="text" value="Hashtag to Analyze"> </p>
+  <p> <!--<select name="user_hashtag" type="text" value="Hashtag to Analyze">-->
+  <select name="user_hashtag">
+      <option value="#racewalking">Race Walking</option>
+      <option value="ImpeachmentDay">Impeachment Day</option>
+      <option value="ImpeachmentHearings">Impeachment Hearings</option>
+      <option value="IraniansDetestSoleimani">Iranians Detest Soleimani</option>
+      <option value="arsonemergency">Arson Emergency</option>
+      <option value="medicare">Medicare</option>
+  </select></p>
   <p> <button type="submit">Detect Bots!</button>
   </form>
   <p id="report_display"></p>
