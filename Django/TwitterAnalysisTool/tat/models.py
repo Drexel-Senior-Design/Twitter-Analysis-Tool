@@ -24,7 +24,10 @@ import re
 import nltk
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
-
+'''
+Below are our helper functions. They start with data manipulation, and then move on to model-loading
+PART I. DATA GATHERING, PREPROCESSING
+'''
 #Hardcoded function to open our client and look at a specific collection to train our model
 #Returns a Pandas Dataframe Object
 def read_mongo_data(database, collection):
@@ -63,7 +66,6 @@ def clean_data_strings_to_ints(dataframe):
     y_int = y.values.tolist()
     y_int = [int(0) if x == 'bot' else int(1) for x in y_int]
     y_df = pd.DataFrame(y_int)
-
     return x, y_df
 
 #This cleans the data we get from twitter for numerical analysis.
@@ -79,28 +81,16 @@ def clean_twitter_data_strings_to_ints(dataframe):
     x = x.rename(columns={'favoritecount': 'likecount'})
     return x
 
+#Get unlabelled twitter text and clean it in the fashion our lstm was trained on
 def clean_twitter_data_text_analysis(df):
-    '''
-    dataframe.fillna(0, inplace=True)
-    fieldnames_list = ['text']
-    x = dataframe['text']
-    return x
-    '''
     #Clean data exactly as we do before training model
     df.fillna(0, inplace=True)
     df = df.applymap(str)
-    #labels = df['label'].map(lambda x: 1 if x == 'bot' else 0)
     df = df[df.text.apply(lambda x: x != "")]
-    #df = df[df.description.apply(lambda x: x != "")]
-
-    # print(df.describe())
-    # print(df.head)
     ##TAKEN FROM @sabbar
     def clean_text(text):
         # Convert words to lower case and split them
         text = text.lower().split()
-        # Remove stop words
-        # stops = set(stopwords.words("english"))
         text = " ".join(text)
         text = re.sub(r"[^A-Za-z0-9^,!.\/'+-=]", " ", text)
         text = re.sub(r"what's", "what is ", text)
@@ -136,7 +126,6 @@ def clean_twitter_data_text_analysis(df):
         stemmed_words = [stemmer.stem(word) for word in text]
         text = " ".join(stemmed_words)
         return text
-
     ##end taken from @sabbar
     # apply clean text to our tweet data
     df['text'] = df['text'].map(lambda x: clean_text(x))
@@ -147,27 +136,7 @@ def clean_twitter_data_text_analysis(df):
     sequences = tokenizer.texts_to_sequences(df['text'])
     data = pad_sequences(sequences, maxlen=50)
     return data
-
-
-# Create your models here.
-'''
-EXAMPLE FOR NEW DJANGO PEOPLE: THIS DID NOT WORK OUT BECAUSE CLASSES RUN AT STARTUP
-FUNCTIONS ARE BETTER TO WRITE FOR ML MODELS, AS THEY WONT ALWAYS BE CALLED
-class GaussianNB():
-    data = read_mongo_data()
-    x, y_df = clean_data_strings_to_ints(data)
-    x_train, x_test, y_train, y_test = train_test_split(x, y_df, test_size=.35, random_state=0)
-    # call and fit model
-    model = GaussianNB()
-    model = model.fit(x_train, y_train.values.ravel())
-    # Make Predictions from split test data, print and heat-map confusion matrix for results
-    y_predict = model.predict(x_test)
-    #Confusion Matrix does not work in Django rn
-    #confusion_matrix = pd.crosstab(y_test, y_predict, rownames=['Actual'], colnames=['Predicted'])
-    #print(confusion_matrix)
-    #matrix = sb.heatmap(confusion_matrix, annot=True)
-    print('Accuracy: ', metrics.accuracy_score(y_test, y_predict))
-'''
+'''PART II: LOAD MODEL HELPER FUNCTIONS'''
 #helper function to load a model (mfn = Model File Name)
 def LoadModel(mfn):
     if mfn == 'gaussianNB':
@@ -177,12 +146,14 @@ def LoadModel(mfn):
     return model
 
 #Function for Gaussian-based Naive Bayes numerical analysis
+#Use this as a template for SKLEARN models
+#They must be trained and then saved using JOBLIB
 def GaussianNB(db, collect):
     #Load requested data from database
     data = read_mongo_data(db, collect)
     data = clean_twitter_data_strings_to_ints(data)
     x = data.values.tolist()
-    #load our model and predict on our new data
+    #load our model and predict on our new data, utilizes JOBLIB
     m = LoadModel('gaussianNB')
     predictions = m.predict(x)
     print(predictions)
@@ -198,22 +169,18 @@ def LSTMTextClassifier(db, collect):
     #Load requested data from database
     data = read_mongo_data(db, collect)
     data = clean_twitter_data_text_analysis(data)
-    #x = data.values.tolist()
-    #load model and predict
-
-    #m = LoadModel('LSTMText')
-    #predictions - m.predict(x)
-
     #load model and weights, then open them and predict on new data
-
+    #Utilizes a JSON object for the model and a .h5 file for the weights
     model = 'tat/mlModels/LSTMModel.json'
     weights = 'tat/mlModels/LSTMweights.h5'
     with CustomObjectScope({'GlorotUniform': glorot_uniform()}):
         with open(model, 'r') as f:
             model = model_from_json(f.read())
         model.load_weights(weights)
+    #Make predictions of new data in model
     preds = model.predict_classes(data, verbose=2)
     probs = model.predict_proba(data, verbose=2)
+    #Convert to arrays, then lists. Replace numeric labels with textual for printing
     preds_arry = np.array(preds)
     probs_arry = np.array(probs)
     # Bots = 0, Genuine = 1
@@ -226,18 +193,18 @@ def LSTMTextClassifier(db, collect):
             preds_lst[preds_lst.index(x)] = 'genuine'
         else:
             preds_lst[preds_lst.index(x)] ='bot'
-    #print(preds_lst)
-
-    #new_preds = ['bot' if x == [0] else 'genuine' for x in [preds_lst]]
-    #print(probs_lst)
-    #print(new_preds)
     i = 0
+    '''
     for x in preds_lst:
         print("Prediction: {}       Probability: {}".format(x, probs_lst[i]))
         i + 1
+    '''
+    #Light number cruching for basic report
     bot_num = preds_lst.count('bot')
     percent = bot_num/len(preds_lst)*100
     statement = "Out of {} analyzed tweets, {} are suspected bots. That is {}%!".format(len(preds_lst), bot_num, round(percent, 2))
     print(statement)
     return statement
+
+# Create your models here.
 
