@@ -24,3 +24,4 @@ data/combined_multi_bot_and_genuine_200k_split.csv
 data/combined_multi_bot_and_genuine_400k_split.csv
 src/application_wrapper/app/js/data/combined_multi_bot_and_genuine_200k_split.csv
 src/application_wrapper/app/js/data/combined_multi_bot_and_genuine_400k_split.csv
+Django/TwitterAnalysisTool/django_env/lib/python3.7/site-packages/tensorflow_core/python/_pywrap_tensorflow_internal.so
