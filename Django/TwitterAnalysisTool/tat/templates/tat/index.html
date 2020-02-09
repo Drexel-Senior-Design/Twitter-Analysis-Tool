@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<!-- HTML Outline/Template by Rush Weigelt
+The intentions of this document are to provide an About Us template-->
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -82,9 +84,10 @@ body {
   <h3>Twitter Analysis Tool</h3>
   <p>Leverage the power of Machine Learning to detect Propaganda Bots on Twitter.</p>
   <p>Enter the Hashtag you wish to analyze below:</p>
+   <!-- Get user information here. The variables they'll be refered to our their NAMES -->
     <form method="POST" action="/tat/search/">
         {% csrf_token %}
-  <p> <!--<select name="user_hashtag" type="text" value="Hashtag to Analyze">-->
+  <p>
   <select name="user_hashtag">
       <option value="#racewalking">Race Walking</option>
       <option value="ImpeachmentDay">Impeachment Day</option>
@@ -93,6 +96,10 @@ body {
       <option value="arsonemergency">Arson Emergency</option>
       <option value="medicare">Medicare</option>
   </select></p>
+        <p><select name="user_model">
+            <option value="nb">Naive Bayes</option>
+            <option value="LSTMText">LSTM Text Analysis</option>
+        </select></p>
   <p> <button type="submit">Detect Bots!</button>
   </form>
   <p id="report_display"></p>
