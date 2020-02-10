@@ -1,6 +1,3 @@
-<!DOCTYPE html
-Template Based on W3 Schools HTML tutorial>
-<html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -87,11 +84,25 @@ body {
   <h3>Twitter Analysis Tool</h3>
   <p>Leverage the power of Machine Learning to detect Propaganda Bots on Twitter.</p>
   <p>Enter the Hashtag you wish to analyze below:</p>
-  <p> <input id="user_hashtag" type="text" value="Hashtag to Analyze"> </p>
-  <p> <button onclick="run_NB()">Detect Bots!</button>
+  <p>#<input id="user_hashtag" type="text" placeholder="Hashtag to Analyze"> </p>
+  <p> <button id="hashtag_btn" onclick="">Detect Bots!</button>
   <p id="report_display"></p>
 </div>
 
+<!-- unhide this in devtools to see the debugging panel -->
+<div hidden id="debugging">
+  <div id="tweetData">
+    <h1>Debugging Panel </h1>
+    <h2>Tweet Data</h2>
+    <h2>User</h2>
+    <p id="user"></p>
+    <h2>Tweet Body </h2>
+    <p id="tweetbody"></p>
+    <h2>Twitter Connection Info </h2>
+    <h3>Connected?</h3>
+    <p id="tweet_connection_status"></p>
+  </div>
+</div>
 
 <script>
 function Menu_Nav() {
@@ -104,4 +115,3 @@ function Menu_Nav() {
 }
 </script>
 </body>
-</html>
