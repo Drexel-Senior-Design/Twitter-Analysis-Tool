@@ -80,7 +80,7 @@ DATABASES = {
         #'NAME': 'BVM15',
         'HOST': 'bvm15.cci.drexel.edu',
         'PORT': 27017,
-        #'HOST': 'mongodb://localhost:27017/?serverSelectionTimeoutMS=5000&connectTimeoutMS=10000&3t.uriVersion=3&3t.connection.name=BVM15&3t.ssh=true&3t.sshAddress=bvm15.cci.drexel.edu&3t.sshPort=22&3t.sshAuthMode=password&3t.sshUser=rw643&3t.sshPassword=Password23'
+        'HOST': 'mongodb://bvm15.cci.drexel.edu:27017/?serverSelectionTimeoutMS=5000&connectTimeoutMS=10000&3t.uriVersion=3&3t.ssh=true&3t.sshAddress=bvm15.cci.drexel.edu&3t.sshPort=22&3t.sshAuthMode=password&3t.sshUser=rw643&3t.sshPassword=Password23'
     }
 }
 
