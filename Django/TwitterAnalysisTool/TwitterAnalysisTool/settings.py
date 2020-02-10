@@ -25,7 +25,7 @@ SECRET_KEY = 'd==b1@e$1kj0n6zb9l7eie5x#)&p4&m(=)lol%jsolrwua0p+q'
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 #DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 ALLOWED_HOSTS = ['twitat.herokuapp.com']
 
