@@ -38,7 +38,7 @@ class SQLConnector(Connector):
                     train_users.append(userid)
                     train_total = train_total + proportion
 
-            tweet_query = f"SELECT {', '.join([userid, *fields])} FROM {table}"
+            tweet_query = f"SELECT {', '.join(['userid', *fields])} FROM {table}"
             self.cursor.execute(tweet_query)
 
             train_set = []
