@@ -21,13 +21,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'd==b1@e$1kj0n6zb9l7eie5x#)&p4&m(=)lol%jsolrwua0p+q'
-#SECRET_KEY - os.environ.get('DJANGO_SECRET_KEY', 'd==b1@e$1kj0n6zb9l7eie5x#)&p4&m(=)lol%jsolrwua0p+q')
-
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-#DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
-ALLOWED_HOSTS = ['twitat.herokuapp.com']
+DEBUG = True
+
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -43,7 +41,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -122,21 +119,6 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.11/howto/static-files/
-PROJECT_ROOT   =   os.path.join(os.path.abspath(__file__))
-STATIC_ROOT  =   os.path.join(PROJECT_ROOT, 'staticfiles')
+# https://docs.djangoproject.com/en/3.0/howto/static-files/
+
 STATIC_URL = '/static/'
-
-# Extra lookup directories for collectstatic to find static files
-STATICFILES_DIRS = (
-    os.path.join(PROJECT_ROOT, 'static'),
-)
-
-#  Add configuration for static files storage using whitenoise
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
-
-import dj_database_url
-prod_db = dj_database_url.config()
-DATABASES['default'].update(prod_db)
-
-#ALLOWED_HOSTS = ['twitat.herokuapp.com']
