@@ -14,20 +14,23 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+env = os.path.join(BASE_DIR, 'django_env')
+SECRET_KEY = os.environ.get('SECRET_KEY')
+DB_PASS = os.environ.get('DB_PASS')
+DB_USER = os.environ.get('DB_USER')
+DB_HOST = os.environ.get('DB_HOST')
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'd==b1@e$1kj0n6zb9l7eie5x#)&p4&m(=)lol%jsolrwua0p+q'
-#SECRET_KEY - os.environ.get('DJANGO_SECRET_KEY', 'd==b1@e$1kj0n6zb9l7eie5x#)&p4&m(=)lol%jsolrwua0p+q')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 #DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
-ALLOWED_HOSTS = ['twitat.herokuapp.com']
+ALLOWED_HOSTS = ['twitat.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
@@ -80,13 +83,10 @@ WSGI_APPLICATION = 'TwitterAnalysisTool.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        #'NAME': 'BVM15',
-        'HOST': 'bvm15.cci.drexel.edu',
-        'PORT': 27017,
-        #'HOST': 'mongodb://localhost:27017/?serverSelectionTimeoutMS=5000&connectTimeoutMS=10000&3t.uriVersion=3&3t.connection.name=BVM15&3t.ssh=true&3t.sshAddress=bvm15.cci.drexel.edu&3t.sshPort=22&3t.sshAuthMode=password&3t.sshUser=rw643&3t.sshPassword=Password23'
+        'HOST' : DB_HOST,
     }
-}
 
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
