@@ -2,7 +2,6 @@ from collections import Counter
 from random import shuffle
 
 import mysql.connector
-from mysql.connector import errorcode
 
 from ML.Connectors import Connector
 
