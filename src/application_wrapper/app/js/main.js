@@ -17,10 +17,10 @@ var fakeDataX = [4, 2, 5, 20, 20, 1, 5, 3];
 // Establish Twitter Connection
 let Twit = require("twit");
 var T = new Twit({
-	consumer_key:         '',
-	consumer_secret:      '',
-	access_token:         '',
-	access_token_secret:  '',
+	consumer_key:         'XLuTfzcgjUtlZs4dzGM3W2tq6',
+	consumer_secret:      'FfTFPxwhiI97wuy9TOe6Lq8Sgl8phJRFQNaukQbEXg6oblyuzJ',
+	access_token:         '1179141952794583042-IPNL6nE2SdzZnG26p3Ld5TgpBSNfA9',
+	access_token_secret:  'ptuUKpOGbUZIg8alVapQdXg3ibPdoBMwGT5LBDW4DRcgK',
 });
 
 function Get_Tweets_in_Hashtag(){
@@ -36,6 +36,7 @@ function Get_Tweets_in_Hashtag(){
 			// TODO: Error Handling
 			if (!err) {
 				let tweet = data.statuses[0];
+				console.log(tweet);
 				document.getElementById("user").innerHTML = tweet.user.name;
 				document.getElementById("tweetbody").innerHTML = tweet.text;
 			}

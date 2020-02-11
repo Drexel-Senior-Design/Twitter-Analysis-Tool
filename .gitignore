@@ -24,3 +24,5 @@ data/combined_multi_bot_and_genuine_200k_split.csv
 data/combined_multi_bot_and_genuine_400k_split.csv
 src/application_wrapper/app/js/data/combined_multi_bot_and_genuine_200k_split.csv
 src/application_wrapper/app/js/data/combined_multi_bot_and_genuine_400k_split.csv
+src/application_wrapper/node_modules/
+src/application_wrapper/npm-debug.log
