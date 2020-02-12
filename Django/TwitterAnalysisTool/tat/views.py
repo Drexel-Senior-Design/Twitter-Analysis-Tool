@@ -29,7 +29,7 @@ def search(request):
         user_model = request.POST.get('user_model', None)
         #print(user_model)
         if user_model == 'nb':
-            html = GaussianNB('Hashtags', user_hashtag)
+            html = GaussianNB('NewHampshire')
         else:
             html = LSTMTextClassifier('Hashtags', user_hashtag)
         print(user_hashtag)

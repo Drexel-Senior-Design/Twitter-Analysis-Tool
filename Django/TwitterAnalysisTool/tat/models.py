@@ -24,6 +24,7 @@ import re
 import nltk
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
+from .twitter_scrape import get_all_tweets
 '''
 Below are our helper functions. They start with data manipulation, and then move on to model-loading
 PART I. DATA GATHERING, PREPROCESSING
@@ -36,16 +37,6 @@ def read_mongo_data(database, collection):
     df = db[collection]
     df = pd.DataFrame(list(df.find()))
     return df
-    #This did not work, and did not seem neccesary for the amt of data we have
-    #Create query to the specific DB and Collection
-    #cursor = db[collection].find(query)
-    #print(cursor)
-    #Make cursor into DF
-    #df = pd.DataFrame(list(cursor))
-    #Delete ID col
-    #if no_id:
-        #del df['_id']
-    #return df
 
 #Helper function to be used after read_mongo_data: fill nas, convert all columns from strings to numberic
 #Returns two pandas dataframe, one a df of our features, the other of our labels
@@ -136,6 +127,7 @@ def clean_twitter_data_text_analysis(df):
     sequences = tokenizer.texts_to_sequences(df['text'])
     data = pad_sequences(sequences, maxlen=50)
     return data
+
 '''PART II: LOAD MODEL HELPER FUNCTIONS'''
 #helper function to load a model (mfn = Model File Name)
 def LoadModel(mfn):
@@ -148,7 +140,7 @@ def LoadModel(mfn):
 #Function for Gaussian-based Naive Bayes numerical analysis
 #Use this as a template for SKLEARN models
 #They must be trained and then saved using JOBLIB
-def GaussianNB(db, collect):
+def x_GaussianNB(db, collect):
     #Load requested data from database
     data = read_mongo_data(db, collect)
     data = clean_twitter_data_strings_to_ints(data)
@@ -203,6 +195,20 @@ def LSTMTextClassifier(db, collect):
     bot_num = preds_lst.count('bot')
     percent = bot_num/len(preds_lst)*100
     statement = "Out of {} analyzed tweets, {} are suspected bots. That is {}%!".format(len(preds_lst), bot_num, round(percent, 2))
+    print(statement)
+    return statement
+
+def GaussianNB(hashtag):
+    m = LoadModel('gaussianNB')
+    x = get_all_tweets(hashtag)
+    print(x)
+    predictions = m.predict(x)
+    print(predictions)
+    # Light number crunching for report
+    bot_num = np.sum(predictions == 'bot')
+    percent = bot_num / len(predictions) * 100
+    statement = "Out of {} analyzed tweets, {} are suspected bots. That is {}%!".format(len(predictions), bot_num,
+                                                                                        round(percent, 2))
     print(statement)
     return statement
 

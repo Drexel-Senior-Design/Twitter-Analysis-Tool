@@ -79,12 +79,12 @@ body {
 <div style="padding-left:16px">
   <h3>Twitter Analysis Tool</h3>
   <p>Leverage the power of Machine Learning to detect Propaganda Bots on Twitter.</p>
-  <p>Enter the Hashtag you wish to analyze below:</p>
+  <p>Enter the Hashtag you wish to analyze below.</p>
    <!-- Get user information here. The variables they'll be refered to our their NAMES -->
     <form method="POST" action="/tat/search/">
         {% csrf_token %}
-  <p>
-  <select name="user_hashtag">
+ <!-- Depricated after getting free-user-input working
+    <select name="user_hashtag">
       <option value="#racewalking">Race Walking</option>
       <option value="ImpeachmentDay">Impeachment Day</option>
       <option value="ImpeachmentHearings">Impeachment Hearings</option>
@@ -92,6 +92,10 @@ body {
       <option value="arsonemergency">Arson Emergency</option>
       <option value="medicare">Medicare</option>
   </select></p>
+  -->
+        <label for="user_hashtag" >Hashtag: </label>
+      <input type="text" if="user_hashtag" name=""user_hashtag">
+        <br>
         <p><select name="user_model">
             <option value="nb">Naive Bayes</option>
             <option value="LSTMText">LSTM Text Analysis</option>
