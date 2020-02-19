@@ -1,4 +1,24 @@
 /*
+Twitter Widget
+*/
+twttr = (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0],
+    t = window.twttr || {};
+  if (d.getElementById(id)) return t;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
+
+  t._e = [];
+  t.ready = function(f) {
+    t._e.push(f);
+  };
+
+  return t;
+}(document, "script", "twitter-wjs"));
+
+/*
 Event Listeners
  */
 document.addEventListener("DOMContentLoaded", function(){
@@ -15,7 +35,6 @@ variables
 var fakeDataX = [4, 2, 5, 20, 20, 1, 5, 3];
 
 // Establish Twitter Connection
-//let oEmbed = require("oembed");
 let Twit = require("twit");
 var T = new Twit({
 	consumer_key:         'XLuTfzcgjUtlZs4dzGM3W2tq6',
@@ -44,7 +63,20 @@ function Get_Tweets_in_Hashtag(){
 				document.getElementById("tweetbody").innerHTML = tweet.text;
 				document.getElementById("tweeturl").innerHTML = "Http://www.Twitter.com/" +tweet.user.screen_name +"/status/" +tweet.id_str;
 			
-
+				let request = new XMLHttpRequest();
+				request.open("GET", "https://publish.twitter.com/oembed?url=Http://www.Twitter.com/" +tweet.user.screen_name +"/status/" +tweet.id_str);
+				request.send();
+				request.onload = () => {
+					console.log(request);
+					if (request.status === 200){
+						var response = JSON.parse(request.response);
+						document.getElementById("tweetembed").innerHTML = response.html
+						twttr.widgets.load(document.getElementById("tweetembed"));
+						console.log(response.html);
+					} else{
+						console.log("ERROR: " +request.statusText);
+					}
+				}
 			}
 		}
 	);
