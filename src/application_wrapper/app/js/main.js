@@ -15,6 +15,7 @@ variables
 var fakeDataX = [4, 2, 5, 20, 20, 1, 5, 3];
 
 // Establish Twitter Connection
+//let oEmbed = require("oembed");
 let Twit = require("twit");
 var T = new Twit({
 	consumer_key:         'XLuTfzcgjUtlZs4dzGM3W2tq6',
@@ -34,11 +35,16 @@ function Get_Tweets_in_Hashtag(){
 		{ q: '#'+hashtag, count: 100 },
 		function(err, data, response) {
 			// TODO: Error Handling
+
 			if (!err) {
 				let tweet = data.statuses[0];
+
 				console.log(tweet);
 				document.getElementById("user").innerHTML = tweet.user.name;
 				document.getElementById("tweetbody").innerHTML = tweet.text;
+				document.getElementById("tweeturl").innerHTML = "Http://www.Twitter.com/" +tweet.user.screen_name +"/status/" +tweet.id_str;
+			
+
 			}
 		}
 	);
