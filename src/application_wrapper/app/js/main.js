@@ -56,25 +56,56 @@ function Get_Tweets_in_Hashtag(){
 			// TODO: Error Handling
 
 			if (!err) {
-				let tweet = data.statuses[0];
 
-				console.log(tweet);
-				document.getElementById("user").innerHTML = tweet.user.name;
-				document.getElementById("tweetbody").innerHTML = tweet.text;
-				document.getElementById("tweeturl").innerHTML = "Http://www.Twitter.com/" +tweet.user.screen_name +"/status/" +tweet.id_str;
-			
-				let request = new XMLHttpRequest();
-				request.open("GET", "https://publish.twitter.com/oembed?url=Http://www.Twitter.com/" +tweet.user.screen_name +"/status/" +tweet.id_str);
-				request.send();
-				request.onload = () => {
-					console.log(request);
-					if (request.status === 200){
-						var response = JSON.parse(request.response);
-						document.getElementById("tweetembed").innerHTML = response.html
-						twttr.widgets.load(document.getElementById("tweetembed"));
-						console.log(response.html);
-					} else{
-						console.log("ERROR: " +request.statusText);
+				for (i=0; i<5; i++){
+					let tweet = data.statuses[i];
+
+					console.log(tweet);
+					document.getElementById("user").innerHTML = tweet.user.name;
+					document.getElementById("tweetbody").innerHTML = tweet.text;
+					document.getElementById("tweeturl").innerHTML = "Http://www.Twitter.com/" +tweet.user.screen_name +"/status/" +tweet.id_str;
+				
+					let request = new XMLHttpRequest();
+					request.open("GET", "https://publish.twitter.com/oembed?url=Http://www.Twitter.com/" +tweet.user.screen_name +"/status/" +tweet.id_str);
+					request.send();
+					request.onload = () => {
+						console.log(request);
+						if (request.status === 200){
+							var response = JSON.parse(request.response);
+							newTweetDiv = document.getElementById("tweetEmbed1").cloneNode(true);
+							newTweetDiv.innerHTML = response.html
+							document.getElementById('tweetHolder1').appendChild(newTweetDiv)
+							twttr.widgets.load(newTweetDiv);
+							console.log(response.html);
+						} else{
+							console.log("ERROR: " +request.statusText);
+						}
+					}
+				}
+
+				for (i=6; i<11; i++){
+					let tweet = data.statuses[i];
+
+					console.log(tweet);
+					document.getElementById("user").innerHTML = tweet.user.name;
+					document.getElementById("tweetbody").innerHTML = tweet.text;
+					document.getElementById("tweeturl").innerHTML = "Http://www.Twitter.com/" +tweet.user.screen_name +"/status/" +tweet.id_str;
+				
+					let request = new XMLHttpRequest();
+					request.open("GET", "https://publish.twitter.com/oembed?url=Http://www.Twitter.com/" +tweet.user.screen_name +"/status/" +tweet.id_str);
+					request.send();
+					request.onload = () => {
+						console.log(request);
+						if (request.status === 200){
+							var response = JSON.parse(request.response);
+							newTweetDiv = document.getElementById("tweetEmbed2").cloneNode(true);
+							newTweetDiv.innerHTML = response.html
+							document.getElementById('tweetHolder2').appendChild(newTweetDiv)
+							twttr.widgets.load(newTweetDiv);
+							console.log(response.html);
+						} else{
+							console.log("ERROR: " +request.statusText);
+						}
 					}
 				}
 			}
