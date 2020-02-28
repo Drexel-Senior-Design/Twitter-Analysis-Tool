@@ -54,7 +54,7 @@ function Get_Tweets_in_Hashtag(){
 		{ q: '#'+hashtag, count: 100 },
 		function(err, data, response) {
 			// TODO: Error Handling
-
+			// TODO: input tweet data into ML model here. Use output to sort tweets into TweetHolder1 and TweetHolder2
 			if (!err) {
 
 				for (i=0; i<5; i++){
