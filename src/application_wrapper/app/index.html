@@ -5,13 +5,13 @@
 <script src = "js/NaiveBayes_Gaussian.js" > </script>
 <!-- main script -->
 <script src = "js/main.js" > </script>
-<href="data/combined_multi_bot_and_genuine_150.0k_split.csv"></href>
-
+<href='data/combined_multi_bot_and_genuine_150.0k_split.csv'></href>
+<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
 <title>TaT: Twitter analysis Tool </title>
 <style>
 <!style order: main background, dropdown background, ______, ________, hoover top bar, top bar no hoover>
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Roboto'; font-size: 22px;
 }
 .mobile-container {
   max-width: 480px;
@@ -61,11 +61,37 @@ body {
 .logo{
   height: 10%;
 }
+
+.tweetHolder{
+  height:250px;
+  line-height:1em;
+  overflow:scroll;
+  padding:10px;
+  background-color:#ffc9c7;
+  color:#000;
+  scrollbar-base-color:#DEBB07;
+  margin: 10px;
+  overflow-x: hidden;
+  -webkit-box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+}
+
+.tweetHolderHolder{
+  display:-webkit-inline-box; 
+  width:100%;
+  background-color:ffb566;
+  -webkit-box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.14), 0 1px 7px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -1px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.14), 0 1px 7px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -1px rgba(0, 0, 0, 0.2);
+}
+
+.twitter-tweet{
+  margin-left:auto;
+  margin-right:auto;
+}
+
 </style>
 </head>
 <body>
-
-
 
 <!-- Top Navigation Menu -->
 <div  class="topnav">
@@ -80,7 +106,7 @@ body {
   </a>
 </div>
 
-<div style="padding-left:16px">
+<div style="padding-left:16px; font-family: 'Roboto'; font-size: 14px;">
   <h3>Twitter Analysis Tool</h3>
   <p>Leverage the power of Machine Learning to detect Propaganda Bots on Twitter.</p>
   <p>Enter the Hashtag you wish to analyze below:</p>
@@ -90,7 +116,7 @@ body {
 </div>
 
 <!-- unhide this in devtools to see the debugging panel -->
-<div id="debugging">
+<div id="debugging" style="font-family: 'Roboto'; font-size: 14px;">
   <div id="tweetData">
     <h1>Debugging Panel </h1>
     <h2>Tweet Data</h2>
@@ -102,18 +128,21 @@ body {
     <p id="tweeturl"></p>
     <h2>Tweet</h2>
     
-    <div style="display:-webkit-inline-box;">
-      <div id="tweetHolder1" style="width:50%;height:250px;line-height:1em;overflow:scroll;padding:10px;background-color:#ffc9c7;color:#714D03;scrollbar-base-color:#DEBB07;">
-      #LikelyBots
-      <p id="tweetEmbed1"></p>
+    <div class=tweetHolderHolder>
+      <div style="width:50%;">
+        <h2 style="text-align: center">#LikelyBots</h2>
+        <div id="tweetHolder1" class=tweetHolder>
+          <p id="tweetEmbed1"></p>
+        </div>
       </div>
 
-      <div id="tweetHolder2" style="width:50%;height:250px;line-height:1em;overflow:scroll;padding:10px;background-color:#c3f6c3;color:#714D03;scrollbar-base-color:#DEBB07;">
-      #LikelyHuman
-      <p id="tweetEmbed2"></p>
+      <div style="width:50%;">
+        <h2 style="text-align: center;">#LikelyHuman</h2>
+        <div id="tweetHolder2" class="tweetHolder" style="background-color:c3f6c3">
+          <p id="tweetEmbed2"></p>
+        </div>
       </div>
     </div>
-
 
     <h2>Twitter Connection Info </h2>
     <h3>Connected?</h3>
