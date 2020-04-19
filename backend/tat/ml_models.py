@@ -24,11 +24,16 @@ import re
 import nltk
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
-from .data_manipulation import *
-from .twitter_scrape import get_all_tweets, get_twitter_data_lstm
+import sys
+import os
+#Add another path so we do not depend on relative imports
+sys.path.insert(2,os.path.dirname(os.path.abspath(__file__)))
+from data_manipulation import *
+from twitter_scrape import get_all_tweets, get_twitter_data_lstm
 import requests
-from .heat_map import create_heatmap
+from heat_map import create_heatmap
 
+#Certainty threshold variables for each model
 randomforest_threshold_val = .68
 ada_boost_threshold_val = .51
 nb_threshold_val = .7
@@ -47,8 +52,9 @@ def LoadModel(mfn):
     return model
 
 #Helper function to simplify calling and running our basic SKLearn models
-def basicSKLearnModel(model, hashtag, threshold_val):
+def basicSKLearnModel(model, hashtag, threshold_val, map_bool):
     print(hashtag)
+    #returned from our tweter scrape, we get the data to analyse, the data to reconstruct suspected tweets, and location data of bots
     data, reconstruct, verified_loc = get_all_tweets(hashtag)
     # print(data)
     # predictions = m.predict(data)
@@ -99,30 +105,33 @@ def basicSKLearnModel(model, hashtag, threshold_val):
     percent = bot_sum / len(predictions) * 100
     statement = "For the hashtag {}: \n Out of {} analyzed tweets, {} are suspected bots. That is {}%!" \
                 "".format(hashtag, len(predictions), bot_sum, round(percent,2))
-    #create heatmap
     #print("locations:")
     #print(locs)
-    map = create_heatmap(locs)
+    #Heatmap
+    if map_bool != None:
+        map = create_heatmap(locs)
+    else:
+        map = ''
     print(statement)
     # Returns the statistics and the tweets to embed
     return statement, embed, map
 
 
 #Gaussian Naive Bayes
-def GaussianNB(hashtag):
+def GaussianNB(hashtag, map_bool):
     m = LoadModel('gaussianNB')
-    return basicSKLearnModel(m, hashtag, nb_threshold_val)
+    return basicSKLearnModel(m, hashtag, nb_threshold_val, map_bool)
 #Random Forest
-def RandomForest(hashtag):
+def RandomForest(hashtag, map_bool):
     m = LoadModel('RandomForestModel')
-    return basicSKLearnModel(m, hashtag, randomforest_threshold_val)
+    return basicSKLearnModel(m, hashtag, randomforest_threshold_val, map_bool)
 #Ada Boost
-def ADA(hashtag):
+def ADA(hashtag, map_bool):
     m = LoadModel('ADA')
-    return basicSKLearnModel(m, hashtag, ada_boost_threshold_val)
+    return basicSKLearnModel(m, hashtag, ada_boost_threshold_val, map_bool)
 
 #Function for our LSTM Textual Classifier
-def LSTMTextClassifier(hashtag):
+def LSTMTextClassifier(hashtag, map_bool):
     #Load requested data from database
     data, reconstruct, ver_loc = get_twitter_data_lstm(hashtag)
     data = pd.DataFrame(data)
@@ -176,8 +185,11 @@ def LSTMTextClassifier(hashtag):
     percent = bot_num/len(preds_lst)*100
     statement = "Out of {} analyzed tweets, {} are suspected bots. That is {}%!".format(len(preds_lst), bot_num, round(percent, 2))
     print(statement)
-    create_heatmap(locs)
-    return statement, embed
+    if map_bool != None:
+        map = create_heatmap(locs)
+    else:
+        map = ''
+    return statement, embed, map
 
 
 
