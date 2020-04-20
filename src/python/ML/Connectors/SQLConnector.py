@@ -1,21 +1,24 @@
 from collections import Counter
 from random import shuffle
 
-import mysql.connector
+import pandas as pd
+import sqlalchemy
 
 from ML.Connectors import Connector
 
 
 class SQLConnector(Connector):
-    def __init__(self, **kwargs):
-        self.connection = mysql.connector.connect(**kwargs)
-        self.cursor = self.connection.cursor()
-    
-    def retrieve(self, table, fields, test_size=None, train_size=None, batch_size=None):
-        if not batch_size:
+    def __init__(self, user, password, location, database):
+        self.engine = sqlalchemy.create_engine(f'mysql+pymysql://{user}:{password}@{location}/{database}')
+   
+    def retrieve(self, table, fields):
+        return pd.read_sql(table, self.engine, columns=fields)
+
+    def train_test_split(self, table, fields, test_size=None, train_size=None):
+        with self.engine.connect() as connection:
             userid_query = f"SELECT userid FROM {table}"
-            self.cursor.execute(userid_query)
-            userids = Counter(userid for (userid,) in self.cursor)
+            result = connection.execute(userid_query)
+            userids = Counter(userid for (userid,) in result)
             
             if test_size is None and train_size is None:
                 test_size = 0.25
@@ -24,7 +27,7 @@ class SQLConnector(Connector):
                 train_size = 1 - test_size
             elif test_size is None:
                 test_size = 1 - train_size
-            else:
+            elif train_size + test_size != 1:
                 raise ValueError('Test and train sizes must be floats that add to 1.')
 
             num_tweets = sum(userids.values())
@@ -32,22 +35,18 @@ class SQLConnector(Connector):
             shuffle(proportions)
 
             train_users = []
+            test_users = []
             train_total = 0
             for (userid, proportion) in proportions:
                 if train_total < train_size:
                     train_users.append(userid)
                     train_total = train_total + proportion
-
-            tweet_query = f"SELECT {', '.join(['userid', *fields])} FROM {table}"
-            self.cursor.execute(tweet_query)
-
-            train_set = []
-            test_set = []
-            for result in self.cursor:
-                userid = result[0]
-                if userid in train_users:
-                    train_set.append(result[1:])
                 else:
-                    test_set.append(result[1:])
+                    test_users.append(userid)
+
+            tweets = pd.read_sql(table, connection, columns=['userid', *fields])
+
+            train_set = tweets.loc[tweets["userid"].isin(train_users)]
+            test_set = tweets.loc[tweets["userid"].isin(test_users)]
 
             return train_set, test_set
