@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+#import djongo
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -25,8 +26,8 @@ FRONTEND_DIR = os.path.abspath(os.path.join(BACKEND_DIR, '..', 'frontend'))
 SECRET_KEY = '4_o4mbm-l8bng1_=_l_57q4dyu8yq2eoxil64ijw_yy20i2#ot'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_ENV') == 'development'
-
+#DEBUG = os.environ.get('DJANGO_ENV') == 'development'
+DEBUG = True
 ALLOWED_HOSTS = ['localhost']
 
 
@@ -40,6 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'tat',
+    'frontend',
 ]
 
 MIDDLEWARE = [
@@ -131,3 +135,13 @@ STATICFILES_STORAGE = 'tat.storage.StaticFilesStorage'
 STATIC_ROOT = os.path.join(BACKEND_DIR, 'static')
 
 WHITENOISE_ROOT = os.path.join(FRONTEND_DIR, 'build', 'root')
+
+#rest framework def
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+    'DEFAULT_RENDER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    ),
+}

@@ -9,7 +9,10 @@ from django.http import HttpResponse
 from django.template import loader
 from django.core.exceptions import *
 
-from tat.models import GaussianNB, LSTMTextClassifier, RandomForest, ADA
+from .models import GaussianNB, LSTMTextClassifier, RandomForest, ADA, Hashtag_Results, Hashtag_Search
+
+from .serializers import Search_Serializer, Results_Serializer
+from rest_framework import generics
 
 @csrf_exempt
 def catchall_dev(request, upstream='http://localhost:3000'):
@@ -50,22 +53,23 @@ catchall_prod = TemplateView.as_view(template_name='index.html')
 
 catchall = catchall_dev if settings.DEBUG else catchall_prod
 
+
 def search(request):
     if request.method == 'POST':
         user_hashtag = request.POST.get('user_hashtag')
         user_model = request.POST.get('user_model', None)
         #print(user_model)
         if user_model == 'nb':
-            print(user_model)
+            #print(user_model)
             html = GaussianNB(user_hashtag)
         elif user_model == 'RandomForest':
-            print(user_model)
+            #print(user_model)
             html = RandomForest(user_hashtag)
         elif user_model == 'ada':
-            print(user_model)
+            #print(user_model)
             html = ADA(user_hashtag)
         elif user_model == 'lstm':
-            print(user_model)
+            #print(user_model)
             html = LSTMTextClassifier(user_hashtag)
         print(user_hashtag)
         return HttpResponse(html)
@@ -74,47 +78,97 @@ def search(request):
 # Create your views here.
 def index(request):
     context ={
-        'result' : None,
-        'embedded_tweets' : None
+
     }
     if request.GET.get('user_hashtag'):
+        #Get our info from the website
         user_hashtag = request.GET.get('user_hashtag')
         user_model = request.GET.get('user_model', None)
+        user_map_bool = request.GET.get('user_map_bool')
+        #Assign vars to our new search Model Object
+        search = Hashtag_Search()
+        search.user_hashtag = user_hashtag
+        search.ml_model = user_model
+        search.map_bool = user_map_bool
+        #Assign vars to our new Results Model Object
+        #results = Hashtag_Results()
+        #x = RandomForest(user_hashtag, user_map_bool)
+        #results.ml_output = x[0]
+        #results.bot_heatmap = "<a href='localhost:8000/heatmap/'>User-Reported Location Heatmap Link </a>"
         #User Picks a Model
+        #Naive Bayes
         if user_model == 'nb':
-            #print(user_hashtag)
-            x = GaussianNB(user_hashtag)
+            x = GaussianNB(user_hashtag, user_map_bool)
+            if user_map_bool != None:
+                map = "<a href='localhost:8000/heatmap/'>User-Reported Location Heatmap Link </a>"
+            else:
+                map = ''
+            #Create our Database Items
+            response = Hashtag_Results()
+            response.ml_output = x[0]
+            response.bot_heatmap = None
+            response.search = search
+            search.results = response
+
             context = {
                 "result" : x[0],
                 'embedded_tweets': x[1],
-                "map": "<a href='localhost:8000/heatmap/'>User-Reported Location Heatmap Link </a>"
+                "map": map,
             }
             return render(request, 'tat/index.html', context)
+        #Ada Boost
         elif user_model == 'ada':
-            x = ADA(user_hashtag)
-            #print(x[1])
-            context = {
-                "result" : x[0],
-                "embedded_tweets" : x[1],
-                "map": "<a href='localhost:8000/heatmap/'>User-Reported Location Heatmap Link </a>"
-            }
-            return render(request, 'tat/index.html', context)
-        elif user_model == 'RandomForest':
-            x = RandomForest(user_hashtag)
-            # print(x[1])
+            x = ADA(user_hashtag, user_map_bool)
+            if user_map_bool != None:
+                map = "<a href='localhost:8000/heatmap/'>User-Reported Location Heatmap Link </a>"
+            else:
+                map = ''
+            #Create our Database Items
+            response = Hashtag_Results()
+            response.ml_output = x[0]
+            response.bot_heatmap = None
+            response.search = search
+            search.results = response
+
             context = {
                 "result": x[0],
                 "embedded_tweets": x[1],
-                "map": "<a href='localhost:8000/heatmap/'>User-Reported Location Heatmap Link </a>"
+                "map": map
+            }
+            return render(request, 'tat/index.html', context)
+        #Random Forest
+        elif user_model == 'rf':
+            x = RandomForest(user_hashtag, user_map_bool)
+            if user_map_bool == True:
+                map = "<a href='localhost:8000/heatmap/'>User-Reported Location Heatmap Link </a>"
+            else:
+                map = ''
+            response = Hashtag_Results()
+            response.ml_output = x[0]
+            response.bot_heatmap = map
+            context = {
+                "result": x[0],
+                "embedded_tweets": x[1],
+                "map": map
             }
             return render(request, 'tat/index.html', context)
         elif user_model == 'lstm':
-            x = LSTMTextClassifier(user_hashtag)
+            x = LSTMTextClassifier(user_hashtag, user_map_bool)
+            if user_map_bool != None:
+                map = "<a href='localhost:8000/heatmap/'>User-Reported Location Heatmap Link </a>"
+            else:
+                map = ''
+            #Create our Database Items
+            response = Hashtag_Results()
+            response.ml_output = x[0]
+            response.bot_heatmap = None
+            response.search = search
+            search.results = response
             # print(x[1])
             context = {
                 "result": x[0],
                 "embedded_tweets": x[1],
-                "map": "<a href='localhost:8000/heatmap/'>User-Reported Location Heatmap Link </a>"
+                "map": map
             }
     return render(request, 'tat/index.html', context)
 
@@ -148,3 +202,11 @@ def heatmap(request):
 
     }
     return render(request, 'tat/heatmap.html', context)
+
+class HashtagSearchCreate(generics.ListCreateAPIView):
+    queryset = Hashtag_Search.objects.all()
+    serializer_class = Search_Serializer
+
+class HashtagResultsCreate(generics.ListCreateAPIView):
+    queryset = Hashtag_Results.objects.all()
+    serializer_class = Results_Serializer

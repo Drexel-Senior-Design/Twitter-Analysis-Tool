@@ -11,7 +11,7 @@ import csv
 import json
 import pandas as pd
 import requests
-from .data_manipulation import friends_followers_ratio, account_age, growth_rate
+from data_manipulation import friends_followers_ratio, account_age, growth_rate
 import numpy as np
 
 #empty list for data, and numbers for how many tweets we pull at a time, and what our total limit is.
@@ -57,7 +57,7 @@ def get_all_tweets(hashtag):
     #deserialise string into py obj
     parsed = json.loads(json_str)
     #print(tweet.text)
-    print(json.dumps(parsed, indent=4, sort_keys=True))
+    #print(json.dumps(parsed, indent=4, sort_keys=True))
     #Natural: followers Count, friendsCount, replyCount, likeCount, retweetCount, hashtagCount, mentionCount, urlCounr
     #Engineered: accountrep, friends_growthrate, followers_growthrate
     formatted_data = [[tweet.user.followers_count, tweet.user.friends_count, 0, tweet.favorite_count,
@@ -79,8 +79,8 @@ def get_all_tweets(hashtag):
     #print(formatted_data)
     #print(text_data)
     tweet_loc_verified = [[tweet.user.verified, tweet.user.location, tweet.geo] for tweet in all_tweet_data]
-    print("Verified and locations:")
-    print(tweet_loc_verified)
+    #print("Verified and locations:")
+    #print(tweet_loc_verified)
 
     return formatted_data, tweet_reconstruct, tweet_loc_verified
 
